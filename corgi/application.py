@@ -1,27 +1,22 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# ibegyourpardon
+import typing
 
 
 class Corgi:
-    def __init__(self, name='App') -> None:
-        self.name = name
-        self.html = \
-            b"""
-                <html>
-                    <head>
-                        <title>123</title>
-                    </head>
-                    <body>
-                        <h1>444 is working!</h1>
-                    </body>
-                </html>
-            """
+    def __init__(self):
+        # init params
+        pass
 
-    def __call__(self, environ, start_response):
-        start_response("200 OK", [("Content-type", "text/html"),
-                                  ('Content-Length', str(len(self.html)))])
+    def wsgi_app(self, environ: dict, start_response: typing.Callable) -> typing.Any:
+        # response = self.full_dispatch_request()
 
-        return [self.html]
+        def response(environ, start_response):
+            start_response('200 OK', [('Content-Type', 'text/html')])
+            return [b'<h1>Hello, web!</h1>']
 
+        return response(environ, start_response)
+
+    def __call__(self, environ: dict, start_response: typing.Callable) -> typing.Any:
+        # __call__ 不直接返回，而是返回 wsgi_app ，好加中间件
+        # start_response('200 OK', [('Content-Type', 'text/html')])
+        return self.wsgi_app(environ=environ, start_response=start_response)
 
