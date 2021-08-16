@@ -4,13 +4,24 @@
 
 
 class Corgi:
+    def __init__(self, name='App') -> None:
+        self.name = name
+        self.html = \
+            b"""
+                <html>
+                    <head>
+                        <title>123</title>
+                    </head>
+                    <body>
+                        <h1>444 is working!</h1>
+                    </body>
+                </html>
+            """
 
-    def wsgi_server(self, environ: dict, start_response):
-        data = b'this is a test'
-        start_response("200 OK", [
-            ("Content-Type", "text/plain"),
-            ("Content-Length", str(len(data)))
-        ])
-        return iter([data])
+    def __call__(self, environ, start_response):
+        start_response("200 OK", [("Content-type", "text/html"),
+                                  ('Content-Length', str(len(self.html)))])
+
+        return [self.html]
 
 
